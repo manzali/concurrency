@@ -3,7 +3,7 @@
 
 #include <queue>
 
-#include "spin.hpp"
+#include "concurrency/spin/mutex.hpp"
 
 namespace concurrency {
 

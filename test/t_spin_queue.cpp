@@ -25,7 +25,7 @@ void my_consumer(std::vector<int> const &rand_vect) {
     spin_queue.pop(item);
     sum += item;
   }
-  //std::cout << "my sum: " << sum << std::endl;
+  std::cout << "my sum:  " << sum << std::endl;
 }
 
 int main(/*int argc, char* argv[]*/) {
@@ -46,7 +46,7 @@ int main(/*int argc, char* argv[]*/) {
       std::begin(rand_vect),
       std::end(rand_vect),
       0);
-  std::cout << "vect sum: " << sum << std::endl;
+  std::cout << "vec sum: " << sum << std::endl;
 
   for (int i = 0; i < ITER; ++i) {
 

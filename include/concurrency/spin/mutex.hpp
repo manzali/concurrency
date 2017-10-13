@@ -12,29 +12,25 @@ namespace spin {
 
 class mutex {
   friend class scoped_lock;
-  std::atomic<bool> m_mutex;
+  std::atomic_flag m_flag = ATOMIC_FLAG_INIT;
  public:
-  mutex()
-      : m_mutex(false) {
+  mutex() {
   }
   mutex(mutex const&) = delete;  // non construction-copyable
   mutex &operator=(mutex const&) = delete;  // non copyable
 };
 
 class scoped_lock {
-  std::atomic<bool>& m_mutex;
+  std::atomic_flag& m_flag;
  public:
   scoped_lock(mutex& m)
-      : m_mutex(m.m_mutex) {
-    while (std::atomic_exchange_explicit(
-        &m_mutex,
-        true,
-        std::memory_order_acquire)) {
+      : m_flag(m.m_flag) {
+    while (m_flag.test_and_set(std::memory_order_acquire)) {
       std::this_thread::yield();  // it does the magic
     }
   }
   ~scoped_lock() {
-    std::atomic_store_explicit(&m_mutex, false, std::memory_order_release);
+    m_flag.clear(std::memory_order_release);
   }
   scoped_lock(scoped_lock const&) = delete;  // non construction-copyable
   scoped_lock &operator=(scoped_lock const&) = delete;  // non copyable
